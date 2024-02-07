@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ru" >
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+    <link rel="shortcut icon" href="https://static.tildacdn.com/tild6363-3164-4632-b262-383437643039/favicon.ico" type="image/x-icon">
+    <title>Easy Delivery App &amp; Способ доставки</title>
+    <meta name="theme-color" content="#000000"/>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script><!--Подключаем скрипт от телеграм-->
+    <script>window.Telegram.WebApp.ready()</script>
+<!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">-->
+    <link rel="stylesheet" href="./public/css/main.css">
+    <link rel="stylesheet" href="./public/css/style_f335e3fa.css">
+    <script src="https://code.jquery.com/jquery-3.7.0.slim.min.js" integrity="sha256-tG5mcZUtJsZvyKAxYLVXrmjKBVLd6VpVccqz/r4ypFE=" crossorigin="anonymous"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/suggestions-jquery@latest/dist/js/jquery.suggestions.min.js"></script>
+<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.43/moment-timezone.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.43/moment-timezone-utils.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.43/moment-timezone-with-data.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+</head>
+<body oncontextmenu="return false;">
+    <div class="warning" id="notifier"></div>
+    <div class="loader-wrap" id="load-wrap">
+        <div class="loader" id="loader">
+            <div class="ball"></div>
+            <div class="ball"></div>
+            <div class="ball"></div>
+        </div>
+        <svg>
+            <defs>
+                <filter id="gooey">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="12" result="blur"></feGaussianBlur>
+                    <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -8"
+                        result="goo"></feColorMatrix>
+                    <feBlend in="SourceGraphic" in2="goo"></feBlend>
+                </filter>
+            </defs>
+        </svg>
+        <span id="error_load" style="color: #fff;font-size: 14px;"></span>
+    </div>
+
+    <form action='' class='form' id="add-from" onsubmit="return false" method="get">
+        <div class="field">
+            <label class="label">Способ доставки</label>
+            <input class="option-input" id="option-0" name="delivery" type="radio" value="delivery" required checked>
+            <label class="option-label" for="option-0">Доставка</label>
+            <input class="option-input" id="option-1" name="delivery" type="radio" value="pickup" required>
+            <label class="option-label" for="option-1">Заберу сам</label>
+            <label class="label">Выберите способ оплаты</label>
+            <div class="payment-list"></div>
+
+            <div class="delivery l-3">
+                <label class="label">Где хотите забрать заказ?</label>
+                <div class="radio-item">
+                    <input class="radio-list" type="radio" name="maps" id="maps" value="maps" required="" checked="">
+                    <label for="maps"><img src="image/map_icon.png" alt="Водопроводная улица, 14/1, Тюмень" class="checkout-payment__slider-image">Водопроводная улица, 14/1, Тюмень</label>
+                </div>
+            </div>
+            <div class="delivery l-2">
+                    <label class="label">Личные данные</label>
+                    <div class="row no-gutters">
+                        <div class="col-5">
+                             <p class="field input-with-placeholder">
+                                 <input class="text-input" id="name" name="name" maxlength="60" type="text" required>
+                                 <label class="key-label" for="name">Имя</label>
+                             </p>
+                        </div>
+                        <div class="col">
+                            <p class="field input-with-placeholder">
+                                <input class="text-input tel" style="min-width: 100%;" id="phone" name="phone" type="tel" value="" required>
+                                <label class="key-label" for="phone">Номер телефона</label>
+                            </p>
+                        </div>
+                    </div>
+            </div>
+            <div class="delivery l-1">
+                    <label class="label" for="name">Адрес доставки</label>
+                        <div class="row no-gutters field" id="streetlimit">
+                            <div class="col-8 input-with-placeholder">
+                                <input class="text-input" id="street"  name="street" type="search" value="" required>
+                                <label class="key-label" for="street">Улицу</label>
+                            </div>
+                            <div class="col input-with-placeholder">
+                                <input class="text-input" style="min-width: 100%;" id="house" name="house" type="text" maxlength="30" value="" required>
+                                <label class="key-label" for="house">Дома</label>
+                            </div>
+                        </div>
+                        <div class="row no-gutters field">
+                            <div class="col input-with-placeholder">
+                                    <input class="text-input" id="flat" name="flat" placeholder="" maxlength="10" type="text" value="" required>
+                                    <label for="flat">Кв./офис</label>
+                            </div>
+
+                            <div class="col input-with-placeholder">
+                                    <input class="text-input" style="min-width: 100%;" id="floor" name="floor" placeholder="" maxlength="10" type="text" value="" required>
+                                    <label for="floor">Этаж</label>
+                            </div>
+
+                        </div>
+                         <div class="row no-gutters field">
+                            <div class="col input-with-placeholder">
+                                    <input class="text-input" id="entrance" name="entrance" autocomplete="entrance" placeholder="" maxlength="10" type="text" value="" required>
+                                    <label for="entrance">Подъезд</label>
+                                </div>
+                            <div class="col input-with-placeholder">
+                                    <input class="text-input" style="min-width: 100%;" id="intercom" name="intercom" placeholder="" maxlength="20" type="text" value="" required>
+                                    <label for="intercom">Домофон</label>
+                                </div>
+                        </div>
+                    </div>
+        </div>
+
+        <label class="label" for="name">Дополнительная информация</label>
+        <div class="row no-gutters rect">
+                    <div class="dining col">🍴 Приборы</div>
+                    <div class="diningnumber">
+                        <button class="dining-minus" type="button" onclick="this.nextElementSibling.stepDown();">-</button>
+                         <input class="dining-text" id="dining-number" type="number" min="0"  max="10" value="1" readonly>
+                        <button class="dining-plus" type="button" onclick="this.previousElementSibling.stepUp();">+</button>
+                    </div>
+            </div>
+
+        <div class="row no-gutters rect-time">
+
+            <div class="dining col">⌚️ Доставка</div>
+            <select class="sel-time" id="select"><option selected="" value="now">⌚️ Ближайшее время</option></select>
+
+        </div>
+
+        <div class="row no-gutters field">
+            <div class="col input-with-placeholder">
+                <textarea class="textarea" style="min-width: 100%;" cols="40" maxlength="300" id="about" name="about" placeholder="" rows="4" required></textarea>
+                <label for="about">Комментарий к заказу</label>
+            </div>
+        </div>
+    </form>
+
+    <div class="row no-gutters field">
+            <span class="copyright"><span id="error_t" style="color: #fff;font-size: 14px;"></span>
+                <br><span id="guuid"></span>
+                <br>© 2023 | <span><a href="https://boteda.ru/" style="color: inherit">Easy Delivery App</a> |<span id="ver"></span></span>
+            </span>
+    </div>
+    <script src='./public/js/app_2dd43f3.js'></script>
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript" >
+       (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+       m[i].l=1*new Date();
+       for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+       k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+       (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+       ym(93247495, "init", {
+            clickmap:true,
+            trackLinks:true,
+            accurateTrackBounce:true,
+            webvisor:true
+       });
+    </script>
+    <noscript><div><img src="https://mc.yandex.ru/watch/93247495" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+    <!-- /Yandex.Metrika counter -->
+</body>
+</html>
